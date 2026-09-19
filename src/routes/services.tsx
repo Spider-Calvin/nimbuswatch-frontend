@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createRoute } from '@tanstack/react-router'
 import {
   createColumnHelper,
@@ -6,7 +6,8 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { fetchServices, type Service } from '../lib/api'
+import { ServiceForm } from '../components/service-form'
+import { createService, fetchServices, type Service } from '../lib/api'
 import { rootRoute } from './__root'
 
 const columnHelper = createColumnHelper<Service>()
@@ -18,9 +19,14 @@ const columns = [
 ]
 
 function ServicesPage() {
+  const queryClient = useQueryClient()
   const { data, isLoading, error } = useQuery({
     queryKey: ['services'],
     queryFn: fetchServices,
+  })
+  const createMutation = useMutation({
+    mutationFn: createService,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['services'] }),
   })
 
   const table = useReactTable({
@@ -57,6 +63,11 @@ function ServicesPage() {
           ))}
         </tbody>
       </table>
+      <h2>Add service</h2>
+      <ServiceForm
+        submitLabel="Add service"
+        onSubmit={(value) => createMutation.mutateAsync(value)}
+      />
     </section>
   )
 }
