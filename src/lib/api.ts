@@ -15,6 +15,31 @@ export async function fetchServices(): Promise<Service[]> {
   return res.json()
 }
 
+export type ServiceInput = {
+  name: string
+  url: string
+}
+
+export async function createService(input: ServiceInput): Promise<Service> {
+  const res = await fetch(`${API_URL}/services`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (!res.ok) throw new Error(`failed to create service: ${res.status}`)
+  return res.json()
+}
+
+export async function updateService(id: number, input: Partial<ServiceInput>): Promise<Service> {
+  const res = await fetch(`${API_URL}/services/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (!res.ok) throw new Error(`failed to update service: ${res.status}`)
+  return res.json()
+}
+
 export type Incident = {
   id: number
   service_id: number
