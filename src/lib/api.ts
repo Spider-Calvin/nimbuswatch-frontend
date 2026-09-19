@@ -15,6 +15,12 @@ export async function fetchServices(): Promise<Service[]> {
   return res.json()
 }
 
+export async function fetchService(id: string): Promise<Service> {
+  const res = await fetch(`${API_URL}/services/${id}`)
+  if (!res.ok) throw new Error(`failed to fetch service: ${res.status}`)
+  return res.json()
+}
+
 export type ServiceInput = {
   name: string
   url: string
