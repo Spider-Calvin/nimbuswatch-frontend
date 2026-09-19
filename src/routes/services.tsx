@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, Link } from '@tanstack/react-router'
 import {
   createColumnHelper,
   flexRender,
@@ -13,7 +13,14 @@ import { rootRoute } from './__root'
 const columnHelper = createColumnHelper<Service>()
 
 const columns = [
-  columnHelper.accessor('name', { header: 'Name' }),
+  columnHelper.accessor('name', {
+    header: 'Name',
+    cell: (info) => (
+      <Link to="/services/$id" params={{ id: String(info.row.original.id) }}>
+        {info.getValue()}
+      </Link>
+    ),
+  }),
   columnHelper.accessor('url', { header: 'URL' }),
   columnHelper.accessor('status', { header: 'Status' }),
 ]
